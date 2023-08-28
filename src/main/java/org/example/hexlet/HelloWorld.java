@@ -7,6 +7,7 @@ import org.example.hexlet.model.Course;
 
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class HelloWorld {
     private static final List<Course> courses = List.of(
@@ -19,6 +20,13 @@ public class HelloWorld {
     public static void main(String[] args) {
         var app = Javalin.create(config -> config.plugins.enableDevLogging());
         app.get("/", ctx -> ctx.render("layout/main.jte"));
+
+        app.get("/secure/{id}", ctx -> {
+            var id = ctx.pathParam("id");
+            var escapedId = StringEscapeUtils.escapeHtml4(id);
+            ctx.contentType("text/html");
+            ctx.result(escapedId);
+        });
 
         app.get("/courses", ctx -> {
             var header = "Все курсы";
